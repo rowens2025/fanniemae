@@ -1,0 +1,4 @@
+# Installed into the extended apache/airflow image (see Dockerfile).
+dbt-core>=1.8.0,<2
+dbt-postgres>=1.8.0,<2
+python-dotenv>=1.0.0

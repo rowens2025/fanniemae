@@ -1,0 +1,62 @@
+version: 2
+
+models:
+  - name: int_loan_monthly_snapshot
+    description: >
+      Loan-month grain view joining staged monthly performance to origination attributes.
+      Materialized incrementally (merge on loan_id, reporting_month) so each run processes only new
+      loan-months and shorter statements are less likely to hit Neon connection limits.
+      For lag columns, the prior in-database month is unioned into the window for each touched loan.
+      Optional dbt vars for bounded loads: snapshot_reporting_month_start / snapshot_reporting_month_end
+      (YYYY-MM-DD, compared to reporting_month). Use overlapping backfill windows only with care.
+    columns:
+      - name: loan_id
+        tests:
+          - not_null
+      - name: reporting_month
+        tests:
+          - not_null
+      - name: delinquency_bucket
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['current', '30_days', '60_days', '90_plus', 'reo', 'zero_balance', 'unknown', 'other']
+      - name: zero_balance_code
+        description: Non-null when loan is removed from active portfolio.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - loan_id
+              - reporting_month
+
+  - name: int_latest_loan_status
+    description: Latest available monthly snapshot per loan.
+    columns:
+      - name: loan_id
+        tests:
+          - not_null
+          - unique
+      - name: latest_reporting_month
+        tests:
+          - not_null
+      - name: delinquency_bucket
+        tests:
+          - not_null
+
+  - name: int_delinquency_rollforward
+    description: Month-over-month delinquency bucket transitions and UPB totals.
+    columns:
+      - name: reporting_month
+        tests:
+          - not_null
+      - name: from_delinquency_bucket
+        tests:
+          - not_null
+      - name: to_delinquency_bucket
+        tests:
+          - not_null
+      - name: loan_count
+        tests:
+          - not_null

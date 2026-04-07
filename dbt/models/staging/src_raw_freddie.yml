@@ -1,0 +1,40 @@
+version: 2
+
+sources:
+  - name: raw_freddie
+    schema: raw_freddie
+    description: Raw Freddie Mac loan-level ingest tables.
+    tables:
+      - name: origination_raw
+        description: Raw origination records loaded from historical_data_*.txt files.
+        columns:
+          - name: loan_sequence_number
+            tests:
+              - not_null
+          - name: source_year
+            tests:
+              - not_null
+          - name: source_quarter
+            tests:
+              - not_null
+              - accepted_values:
+                  arguments:
+                    values: [1, 2, 3, 4]
+      - name: monthly_performance_raw
+        description: Raw monthly performance records loaded from historical_data_time_*.txt files.
+        columns:
+          - name: loan_sequence_number
+            tests:
+              - not_null
+          - name: monthly_reporting_period
+            tests:
+              - not_null
+          - name: source_year
+            tests:
+              - not_null
+          - name: source_quarter
+            tests:
+              - not_null
+              - accepted_values:
+                  arguments:
+                    values: [1, 2, 3, 4]

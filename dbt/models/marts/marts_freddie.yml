@@ -1,0 +1,200 @@
+version: 2
+
+models:
+  - name: dim_delinquency_bucket
+    description: Canonical delinquency bucket dimension for portfolio analytics.
+    columns:
+      - name: delinquency_bucket
+        tests:
+          - not_null
+          - unique
+      - name: delinquency_bucket_order
+        tests:
+          - not_null
+          - unique
+
+  - name: fct_portfolio_monthly
+    description: Monthly portfolio metrics by delinquency bucket.
+    columns:
+      - name: reporting_month
+        tests:
+          - not_null
+      - name: delinquency_bucket
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_delinquency_bucket')
+                field: delinquency_bucket
+      - name: distinct_loan_count
+        tests:
+          - not_null
+      - name: total_current_actual_upb
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - reporting_month
+              - delinquency_bucket
+
+  - name: dim_calendar
+    columns:
+      - name: calendar_month
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_loan
+    columns:
+      - name: loan_id
+        tests:
+          - not_null
+          - unique
+      - name: origination_year
+        tests:
+          - not_null
+      - name: origination_quarter
+        tests:
+          - not_null
+
+  - name: fct_loan_monthly_snapshot
+    description: >
+      Loan-month grain fact for dashboard drilldowns and metric calculations.
+      Column tests are disabled: this view scans int_loan_monthly_snapshot (~100M rows); the same
+      constraints are enforced on int_loan_monthly_snapshot and Neon long-running test queries time out.
+    columns:
+      - name: loan_id
+        tests:
+          - not_null:
+              config:
+                enabled: false
+          - relationships:
+              arguments:
+                to: ref('dim_loan')
+                field: loan_id
+              config:
+                enabled: false
+      - name: reporting_month
+        tests:
+          - not_null:
+              config:
+                enabled: false
+          - relationships:
+              arguments:
+                to: ref('dim_calendar')
+                field: calendar_month
+              config:
+                enabled: false
+      - name: delinquency_bucket
+        tests:
+          - not_null:
+              config:
+                enabled: false
+          - relationships:
+              arguments:
+                to: ref('dim_delinquency_bucket')
+                field: delinquency_bucket
+              config:
+                enabled: false
+      - name: current_actual_upb
+        tests:
+          - not_null:
+              config:
+                enabled: false
+
+  - name: fct_vintage_monthly
+    description: Vintage cohort metrics aggregated at cohort+month grain.
+    columns:
+      - name: reporting_month
+        tests:
+          - not_null
+      - name: vintage_year
+        tests:
+          - not_null
+      - name: vintage_quarter
+        tests:
+          - not_null
+      - name: vintage_month
+        tests:
+          - not_null
+      - name: active_loan_records
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - vintage_year
+              - vintage_quarter
+              - vintage_month
+              - reporting_month
+
+  - name: fct_delinquency_rollforward
+    description: Month-over-month delinquency transitions at from/to bucket grain.
+    columns:
+      - name: reporting_month
+        tests:
+          - not_null
+      - name: from_delinquency_bucket
+        tests:
+          - not_null
+      - name: to_delinquency_bucket
+        tests:
+          - not_null
+
+  - name: fct_portfolio_monthly_kpis
+    description: Portfolio-level KPIs including delinquency rate, MoM deltas, rolling averages, and z-scores.
+    columns:
+      - name: reporting_month
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_kpi_metric
+    columns:
+      - name: metric_name
+        tests:
+          - not_null
+          - unique
+      - name: metric_unit_type
+        tests:
+          - not_null
+
+  - name: fct_portfolio_metric_significance_monthly
+    description: >
+      Long-format KPI fact: classic z-score, robust z (median/MAD), percentile rank in trailing 12 months,
+      skew/kurtosis-based distribution_profile, recommended_method routing, and unified primary_anomaly_score.
+    columns:
+      - name: reporting_month
+        tests:
+          - not_null
+      - name: metric_name
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_kpi_metric')
+                field: metric_name
+      - name: recommended_method
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["classic_z", "robust_z", "percentile_rank"]
+              config:
+                where: "rn >= 12 and metric_value is not null"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - reporting_month
+              - metric_name
+
+  - name: fct_portfolio_metric_significance_monthly_wide
+    description: Convenience wide view of the significance table for dashboarding.
+    columns:
+      - name: reporting_month
+        tests:
+          - not_null
+          - unique
