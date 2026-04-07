@@ -16,7 +16,7 @@ export const VIZ_COPY = {
 
   roll: `Rows are “from” delinquency status at the start of the reporting month (prior month’s bucket, or “No prior month” for a loan’s first row). Columns are “to” at month-end. Rate mode: cell ÷ row total = transition share from that “from” bucket. Count mode: raw loan counts.
 
-OTHER (unmapped code): Freddie delinquency status codes that are not mapped to Current / 30 / 60 / 90+ / REO / Unknown(XX) land here—often rare or newer codes worth auditing in staging SQL.
+OTHER (unmapped code): Fannie Mae delinquency status codes that are not mapped to Current / 30 / 60 / 90+ / REO / Unknown(XX) land here—often rare or newer codes worth auditing in staging SQL.
 
 UNKNOWN (XX): explicit XX/unknown codes from the file.
 
@@ -24,13 +24,13 @@ ZERO BALANCE row often looks empty: few loans have a prior-month snapshot classi
 
   buckets: `Stacked shares of loans by delinquency bucket from the monthly portfolio mart. “All” shows each bucket’s share of the full portfolio. “Delinquent-only” drops Current and re-normalizes the remaining buckets so you see how distress mixes without the current bucket dominating. Unknown / other can appear if the source file maps rare codes there—worth validating upstream if the slice looks large. Click the chart to set the reporting month.`,
 
-  vintage: `Goal: see how delinquency evolves as a vintage seasons—same cohort of loans (Freddie file origination quarter), x-axis = months on book since that cohort started, y-axis = DQ rate. Independent of the header reporting month and other chart clicks.
+  vintage: `Goal: see how delinquency evolves as a vintage seasons—same cohort of loans (Fannie Mae file origination quarter), x-axis = months on book since that cohort started, y-axis = DQ rate. Independent of the header reporting month and other chart clicks.
 
 Defaults to the earliest cohort in the mart (chronological). Newest quarters only have a handful of seasoning months, so the curve looks short—pick an older quarter for a full arc. Teal = loan-count 30+ rate; blue = UPB-weighted 30+ rate.`,
 } as const;
 
 export const METHODOLOGY_PARAS = {
-  dataPath: `Data flows from raw Freddie loan-level files through dbt into Neon analytics marts (schema used by this UI).`,
+  dataPath: `Data flows from raw Fannie Mae loan-level files through dbt into Neon analytics marts (schema used by this UI).`,
 
   wilson: `Wilson 95% intervals apply to the loan-count 30+ delinquency proportion (treats delinquent vs not as binomial).`,
 

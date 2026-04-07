@@ -94,7 +94,7 @@ export default function App() {
       <aside className="sidebar">
         <div className="brand">Mortgage analytics</div>
         <div className="brand-sub">
-          Freddie Mac loan-level · Neon marts · dbt-built facts & KPIs
+          Fannie Mae loan-level · Neon marts · dbt-built facts & KPIs
         </div>
         {NAV.map((n) => (
           <button

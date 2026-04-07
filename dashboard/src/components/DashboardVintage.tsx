@@ -53,7 +53,7 @@ export function DashboardVintage({ rows }: { rows: Row[] }) {
       </h2>
       <p className="section-desc">
         <strong>What this is for:</strong> compare how DQ rates evolve as loans <em>age on book</em> within one
-        origination quarter (Freddie file vintage)—independent of the header reporting month and chart clicks elsewhere.
+        origination quarter (Fannie Mae file vintage)—independent of the header reporting month and chart clicks elsewhere.
         X-axis = seasoning months; Y-axis = 30+ DQ rate. Defaults to the <strong>earliest</strong> cohort in the mart;
         pick another quarter from the dropdown. Hover <strong>i</strong> for detail.
       </p>

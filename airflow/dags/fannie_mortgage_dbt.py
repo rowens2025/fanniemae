@@ -1,5 +1,5 @@
 """
-Mortgage analytics: detect new Freddie raw quarter folders under data/raw, then run dbt.
+Mortgage analytics: detect new Fannie Mae raw quarter folders under data/raw, then run dbt.
 
 Raw layout (repo): data/raw/historical_data_<YEAR>/historical_data_<YEAR>Q<N>/
 
