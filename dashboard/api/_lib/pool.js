@@ -1,24 +1,30 @@
-import pg from "pg";
+import { Pool, neonConfig } from "@neondatabase/serverless";
+import ws from "ws";
 
-let pool;
+neonConfig.webSocketConstructor = ws;
 
 export const SCHEMA = "analytics_mart_mortgage";
 
-export function getPool() {
+/**
+ * One-shot pool per request — recommended for Vercel serverless with Neon (avoids stale TCP
+ * and plays better with cold starts than a long-lived node-pg pool with a short timeout).
+ */
+export async function runQuery(sqlText, params) {
   const url = process.env.DATABASE_URL;
   if (!url) {
     throw new Error("DATABASE_URL is not set");
   }
-  if (!pool) {
-    pool = new pg.Pool({
-      connectionString: url,
-      max: 2,
-      idleTimeoutMillis: 20000,
-      connectionTimeoutMillis: 10000,
-      ssl: url.includes("neon.tech") ? { rejectUnauthorized: false } : undefined,
-    });
+  const pool = new Pool({
+    connectionString: url,
+    max: 1,
+    connectionTimeoutMillis: 55000,
+    idleTimeoutMillis: 55000,
+  });
+  try {
+    return params === undefined ? await pool.query(sqlText) : await pool.query(sqlText, params);
+  } finally {
+    await pool.end();
   }
-  return pool;
 }
 
 /** CORS for browser + optional iframe embed from another origin */

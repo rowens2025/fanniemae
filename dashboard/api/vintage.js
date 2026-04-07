@@ -1,4 +1,4 @@
-import { SCHEMA, getPool, preflight } from "./_lib/pool.js";
+import { SCHEMA, runQuery, preflight } from "./_lib/pool.js";
 
 export default async function handler(req, res) {
   if (preflight(req, res)) return;
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     order by vintage_year, vintage_quarter, vintage_month, reporting_month
   `;
   try {
-    const r = await getPool().query(q);
+    const r = await runQuery(q);
     res.status(200).json({ rows: r.rows });
   } catch (e) {
     res.status(500).json({ error: String(e?.message || e) });

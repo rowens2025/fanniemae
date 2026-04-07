@@ -1,4 +1,4 @@
-import { SCHEMA, getPool, preflight } from "./_lib/pool.js";
+import { SCHEMA, runQuery, preflight } from "./_lib/pool.js";
 
 export default async function handler(req, res) {
   if (preflight(req, res)) return;
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     order by metric_name
   `;
   try {
-    const r = month.length > 0 ? await getPool().query(q, [month]) : await getPool().query(q);
+    const r = month.length > 0 ? await runQuery(q, [month]) : await runQuery(q);
     res.status(200).json({ rows: r.rows });
   } catch (e) {
     res.status(500).json({ error: String(e?.message || e) });

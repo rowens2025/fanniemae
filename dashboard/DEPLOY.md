@@ -7,7 +7,7 @@ This app is a **Vite static frontend** plus **Vercel Serverless Functions** unde
 1. Install CLI: `npm i -g vercel`
 2. From this `dashboard` folder: `vercel login` then `vercel` (preview) or `vercel --prod`.
 3. In the Vercel project **Settings → Environment Variables**, add:
-   - `DATABASE_URL` — your Neon connection string (same as local dbt/UI).
+   - `DATABASE_URL` — use Neon’s **pooled** connection string (Dashboard → connect → “Pooled connection” / pooler host). It tolerates serverless cold starts better than the direct string. Same DB as local dbt/UI.
 
 Optional:
 
