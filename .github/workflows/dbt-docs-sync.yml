@@ -1,0 +1,62 @@
+# Generates static dbt Docs (graph + lineage) into dashboard/public/dbt-docs and commits when changed.
+# Add repo secret MORTGAGE_DATABASE_URL (Neon pooled postgres URL, same style as Vercel DATABASE_URL).
+
+name: Sync dbt docs site
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "dbt/**"
+      - "scripts/write-dbt-profile-from-database-url.mjs"
+      - ".github/workflows/dbt-docs-sync.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dbt-docs-sync
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dbt
+        run: pip install "dbt-postgres>=1.9,<1.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Require MORTGAGE_DATABASE_URL secret
+        env:
+          DATABASE_URL: ${{ secrets.MORTGAGE_DATABASE_URL }}
+        run: |
+          test -n "$DATABASE_URL" || (echo "::error::Add repository secret MORTGAGE_DATABASE_URL (Neon postgres URL, same style as Vercel DATABASE_URL)" && exit 1)
+
+      - name: Write dbt profiles.yml from secret
+        env:
+          DATABASE_URL: ${{ secrets.MORTGAGE_DATABASE_URL }}
+        run: node scripts/write-dbt-profile-from-database-url.mjs
+
+      - name: dbt deps & docs generate
+        working-directory: dbt
+        env:
+          DBT_PROFILES_DIR: ${{ github.workspace }}/dbt
+        run: |
+          dbt deps
+          dbt docs generate --target-path ../dashboard/public/dbt-docs --target ci
+
+      - name: Commit updated static docs
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(docs): sync dbt docs for /dbt-docs embed"
+          file_pattern: dashboard/public/dbt-docs/**/*

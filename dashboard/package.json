@@ -11,6 +11,7 @@
     "dev:web": "vite",
     "dev:api": "node server/index.js",
     "docs:sync": "cd ../dbt && dbt docs generate --target-path ../dashboard/public/dbt-docs",
+    "docs:sync:from-database-url": "node ../scripts/write-dbt-profile-from-database-url.mjs && cd ../dbt && dbt deps && dbt docs generate --target-path ../dashboard/public/dbt-docs --target ci",
     "build": "vite build",
     "preview": "vite preview",
     "vercel-build": "npm run build"

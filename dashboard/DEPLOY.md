@@ -13,7 +13,20 @@ Optional:
 
 - `DASHBOARD_CORS_ORIGIN` — set to your Power Visualize site origin (e.g. `https://yoursite.vercel.app`) if you want to lock down CORS instead of `*`.
 
-Before production builds, run `npm run docs:sync` from `dashboard/` so `public/dbt-docs/` contains a fresh `dbt docs generate` output (requires local dbt + Neon credentials). Power Visualize embeds that site at `…/dbt-docs/` in an iframe on the mortgage project page (see the **powervisualize** repo).
+### dbt Docs (`/dbt-docs/`) for Power Visualize
+
+Power Visualize loads **`https://<your-dashboard>/dbt-docs/`** in an iframe. That path must be a **static** dbt Docs site shipped in `dashboard/public/dbt-docs/` (copied to `dist/dbt-docs/` on build).
+
+**Option A — GitHub Actions (recommended)**  
+1. In the GitHub repo, add secret **`MORTGAGE_DATABASE_URL`** (same pooled Neon URL style as Vercel `DATABASE_URL`).  
+2. Run workflow **“Sync dbt docs site”** (Actions tab), or push a change under `dbt/`.  
+3. The workflow generates docs, commits `dashboard/public/dbt-docs/**/*`, and pushes.  
+4. Redeploy the mortgage dashboard on Vercel so the new static files go live.
+
+**Option B — Local**  
+From `dashboard/`: `npm run docs:sync` (uses your normal `dbt/profiles.yml`), **or** with only `DATABASE_URL` in the environment: `npm run docs:sync:from-database-url` (writes `dbt/profiles.yml` from the URL, then runs dbt). Commit the updated `public/dbt-docs/` if you deploy without the workflow.
+
+**Iframe embedding:** `vercel.json` sets **Content-Security-Policy `frame-ancestors`** so `powervisualize.com` and `*.vercel.app` can embed `/dbt-docs/`. Add another origin here if your marketing URL changes.
 
 Warehouse **ERD** (dbdiagram) is configured on the **Power Visualize** Vercel project as `VITE_MORTGAGE_ERD_URL`, not on this dashboard.
 

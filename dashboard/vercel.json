@@ -9,6 +9,26 @@
       "maxDuration": 60
     }
   },
+  "headers": [
+    {
+      "source": "/dbt-docs",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self' https://www.powervisualize.com https://powervisualize.com https://*.vercel.app http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174;"
+        }
+      ]
+    },
+    {
+      "source": "/dbt-docs/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self' https://www.powervisualize.com https://powervisualize.com https://*.vercel.app http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174;"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/(?!api/)(?!dbt-docs)(.*)",
