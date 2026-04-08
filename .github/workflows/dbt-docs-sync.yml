@@ -55,8 +55,9 @@ jobs:
           dbt deps
           dbt docs generate --target-path ../dashboard/public/dbt-docs --target ci
 
+      # Use directory path — `**/*` omits root-level files (index.html, catalog.json, manifest.json).
       - name: Commit updated static docs
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore(docs): sync dbt docs for /dbt-docs embed"
-          file_pattern: dashboard/public/dbt-docs/**/*
+          file_pattern: dashboard/public/dbt-docs/
