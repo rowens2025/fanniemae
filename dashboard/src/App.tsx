@@ -92,23 +92,36 @@ export default function App() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <div className="brand">Mortgage analytics</div>
-        <div className="brand-sub">
-          Fannie Mae loan-level · Neon marts · dbt-built facts & KPIs
+        <div className="sidebar-body">
+          <div className="brand">Mortgage analytics</div>
+          <div className="brand-sub">
+            Fannie Mae loan-level · Neon marts · dbt-built facts & KPIs
+          </div>
+          {NAV.map((n) => (
+            <button
+              key={n.id}
+              type="button"
+              className={`nav-btn ${active === n.id ? "active" : ""}`}
+              onClick={() => {
+                setActive(n.id);
+                document.getElementById(n.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+            >
+              {n.label}
+            </button>
+          ))}
         </div>
-        {NAV.map((n) => (
-          <button
-            key={n.id}
-            type="button"
-            className={`nav-btn ${active === n.id ? "active" : ""}`}
-            onClick={() => {
-              setActive(n.id);
-              document.getElementById(n.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-            }}
+        <p className="dashboard-credit">
+          <a
+            href="https://www.powervisualize.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="dashboard-credit-link"
           >
-            {n.label}
-          </button>
-        ))}
+            Power Visualize
+          </a>
+          <span className="dashboard-credit-sub"> — portfolio &amp; embed</span>
+        </p>
       </aside>
       <main className="main">
         <header className="page-head">

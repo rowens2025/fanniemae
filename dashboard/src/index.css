@@ -81,7 +81,38 @@ code {
   position: sticky;
   top: 0;
   height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-body {
+  flex: 1;
+  min-height: 0;
   overflow: auto;
+}
+
+.dashboard-credit {
+  margin: 0;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.dashboard-credit-link {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.dashboard-credit-link:hover {
+  color: var(--accent);
+}
+
+.dashboard-credit-sub {
+  opacity: 0.85;
 }
 
 .brand {
