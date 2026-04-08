@@ -20,7 +20,7 @@
       ]
     },
     {
-      "source": "/dbt-docs/(.*)",
+      "source": "/dbt-docs/:path*",
       "headers": [
         {
           "key": "Content-Security-Policy",
@@ -31,7 +31,7 @@
   ],
   "rewrites": [
     {
-      "source": "/(?!api/)(?!dbt-docs)(.*)",
+      "source": "/((?!api/)(?!dbt-docs).*)",
       "destination": "/index.html"
     }
   ]
