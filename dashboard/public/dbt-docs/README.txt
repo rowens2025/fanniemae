@@ -10,4 +10,4 @@ Or manually:
   cd dbt
   dbt docs generate --target-path ../dashboard/public/dbt-docs
 
-Then rebuild the dashboard. The UI loads /dbt-docs/ in an iframe under "dbt & lineage".
+Then rebuild the dashboard. These files are served at /dbt-docs/ on the deployed app; Power Visualize embeds that URL below the mortgage dashboard (same idea as RyAgent’s dbt Docs on powervisualize.com).

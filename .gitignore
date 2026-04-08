@@ -13,3 +13,6 @@ dbt/logs/
 dashboard/node_modules/
 dashboard/dist/
 data/raw/
+
+# Local clone of marketing site (separate repo); push from inside that folder, not from fanniemae root
+powervisualize_fresh/

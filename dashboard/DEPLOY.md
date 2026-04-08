@@ -12,10 +12,10 @@ This app is a **Vite static frontend** plus **Vercel Serverless Functions** unde
 Optional:
 
 - `DASHBOARD_CORS_ORIGIN` — set to your Power Visualize site origin (e.g. `https://yoursite.vercel.app`) if you want to lock down CORS instead of `*`.
-- `VITE_MORTGAGE_RAW_ERD_URL` — embed URL for a raw-layer ERD (e.g. dbdiagram.io) shown below the charts after dbt Docs.
-- `VITE_DBT_DOCS_BASE_URL` — override if dbt Docs are hosted elsewhere (default `/dbt-docs/`).
 
-Before production builds, run `npm run docs:sync` from `dashboard/` so `public/dbt-docs/` contains a fresh `dbt docs generate` output (requires local dbt + Neon credentials).
+Before production builds, run `npm run docs:sync` from `dashboard/` so `public/dbt-docs/` contains a fresh `dbt docs generate` output (requires local dbt + Neon credentials). Power Visualize embeds that site at `…/dbt-docs/` in an iframe on the mortgage project page (see the **powervisualize** repo).
+
+Warehouse **ERD** (dbdiagram) is configured on the **Power Visualize** Vercel project as `VITE_MORTGAGE_ERD_URL`, not on this dashboard.
 
 ## After deploy
 
@@ -25,7 +25,8 @@ Before production builds, run `npm run docs:sync` from `dashboard/` so `public/d
 ## Embed on Power Visualize
 
 1. Set `VITE_MORTGAGE_DASHBOARD_URL` in the **powervisualize** project to that URL (no trailing slash).
-2. Rebuild powervisualize, or paste the URL into `reports` in `App.tsx` for the mortgage entry.
+2. Set `VITE_MORTGAGE_ERD_URL` in **powervisualize** to your dbdiagram **embed** URL (same pattern as RyAgent’s ERD on the data-projects page).
+3. Rebuild powervisualize, or paste the URL into `reports` in `App.tsx` for the mortgage entry.
 
 ## Local parity
 
