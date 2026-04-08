@@ -10,6 +10,7 @@
     "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev:api\" \"npm run dev:web\"",
     "dev:web": "vite",
     "dev:api": "node server/index.js",
+    "docs:sync": "cd ../dbt && dbt docs generate --target-path ../dashboard/public/dbt-docs",
     "build": "vite build",
     "preview": "vite preview",
     "vercel-build": "npm run build"

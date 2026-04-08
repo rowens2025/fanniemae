@@ -12,6 +12,10 @@ This app is a **Vite static frontend** plus **Vercel Serverless Functions** unde
 Optional:
 
 - `DASHBOARD_CORS_ORIGIN` — set to your Power Visualize site origin (e.g. `https://yoursite.vercel.app`) if you want to lock down CORS instead of `*`.
+- `VITE_MORTGAGE_RAW_ERD_URL` — embed URL for a raw-layer ERD (e.g. dbdiagram.io) shown below the charts after dbt Docs.
+- `VITE_DBT_DOCS_BASE_URL` — override if dbt Docs are hosted elsewhere (default `/dbt-docs/`).
+
+Before production builds, run `npm run docs:sync` from `dashboard/` so `public/dbt-docs/` contains a fresh `dbt docs generate` output (requires local dbt + Neon credentials).
 
 ## After deploy
 

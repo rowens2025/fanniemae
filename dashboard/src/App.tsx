@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { DashboardAnomalies } from "./components/DashboardAnomalies";
 import { DashboardBuckets } from "./components/DashboardBuckets";
 import { DashboardMethodology } from "./components/DashboardMethodology";
+import { DashboardPipelineDocs } from "./components/DashboardPipelineDocs";
 import { DashboardOverview } from "./components/DashboardOverview";
 import { DashboardTrends } from "./components/DashboardTrends";
 import { DashboardVintage } from "./components/DashboardVintage";
@@ -18,6 +19,7 @@ const NAV: { id: string; label: string }[] = [
   { id: "vintage", label: "Vintage" },
   { id: "buckets", label: "Bucket mix" },
   { id: "method", label: "Methodology" },
+  { id: "pipeline-docs", label: "dbt & lineage" },
 ];
 
 export default function App() {
@@ -157,6 +159,8 @@ export default function App() {
             <DashboardMethodology />
           </ErrorBoundary>
         )}
+
+        <DashboardPipelineDocs />
       </main>
     </div>
   );
